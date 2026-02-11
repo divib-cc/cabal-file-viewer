@@ -1,13 +1,20 @@
 {
   "name": "cabal-file-viewer",
   "displayName": "cabal-file-viewer",
-  "description": "Cabal文件查看",
+  "description": "Cabal文件查看器 | Viewer for Cabal files (.ebm, .ech格式)",
   "version": "0.0.1",
+  "publisher": "divib",
+  "icon": "out/icon.png",
   "engines": {
     "vscode": "^1.109.0"
   },
   "categories": [
     "Other"
+  ],
+  "keywords": [
+    "cabal",
+    "ebm",
+    "ech"
   ],
   "activationEvents": [],
   "main": "./out/extension.js",

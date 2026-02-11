@@ -1,4 +1,3 @@
-// 导入React相关依赖
 import { ModelViewer } from './components/ModelViewer'
 import { useState, useEffect } from 'react'
 import type { FileInfo } from './global'
@@ -10,17 +9,15 @@ const loadEBMFile = async (
   onFileData: (data: ArrayBuffer) => void,
 ) => {
   // 检查全局文件信息是否存在
-  if (!window.ebmFileInfo) {
-    throw new Error('未找到文件信息')
-  }
+  if (!window.ebmFileInfo) throw new Error('未找到文件信息')
 
-  console.log('开始加载文件:', window.ebmFileInfo)
+  // console.log('开始加载文件:', window.ebmFileInfo)
   onFileInfo(window.ebmFileInfo)
 
   try {
     // 测试文件访问权限
     const testResponse = await fetch(window.ebmFileInfo.fileUri, { method: 'HEAD' })
-    console.log('文件访问测试结果:', testResponse.status, testResponse.statusText)
+    // console.log('文件访问测试结果:', testResponse.status, testResponse.statusText)
 
     if (!testResponse.ok) {
       throw new Error(`文件访问失败: ${testResponse.status} ${testResponse.statusText}`)
@@ -29,22 +26,16 @@ const loadEBMFile = async (
     // 获取文件大小
     const contentLength = testResponse.headers.get('Content-Length')
     const totalSize = parseInt(contentLength || '0', 10)
-    console.log('文件大小:', totalSize, 'bytes')
+    // console.log('文件大小:', totalSize, 'bytes')
 
-    if (totalSize === 0) {
-      throw new Error('文件大小为0')
-    }
+    if (totalSize === 0) throw new Error('文件大小为0')
 
     // 流式加载文件内容
     const response = await fetch(window.ebmFileInfo.fileUri)
 
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`)
-    }
+    if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`)
 
-    if (!response.body) {
-      throw new Error('响应体不可读')
-    }
+    if (!response.body) throw new Error('响应体不可读')
 
     // 创建流式读取器
     const reader = response.body.getReader()
@@ -75,7 +66,7 @@ const loadEBMFile = async (
       position += chunk.length
     }
 
-    console.log('文件加载完成，大小:', arrayBuffer.length, 'bytes')
+    // console.log('文件加载完成，大小:', arrayBuffer.length, 'bytes')
     onFileData(arrayBuffer.buffer)
 
   } catch (err: any) {
@@ -96,11 +87,7 @@ function App() {
   useEffect(() => {
     const loadFile = async () => {
       try {
-        await loadEBMFile(
-          setProgress,
-          setFileInfo,
-          setFileData,
-        )
+        await loadEBMFile(setProgress, setFileInfo, setFileData)
       } catch (err: any) {
         setError(err.message)
       } finally {
@@ -114,20 +101,14 @@ function App() {
   // 错误显示界面
   if (error) {
     return (
-      <ErrorDisplay 
-        error={error} 
-        fileInfo={fileInfo} 
-      />
+      <ErrorDisplay error={error} fileInfo={fileInfo} />
     )
   }
 
   // 加载中界面
   if (isLoading) {
     return (
-      <LoadingScreen 
-        progress={progress} 
-        fileInfo={fileInfo} 
-      />
+      <LoadingScreen progress={progress} fileInfo={fileInfo} />
     )
   }
 
@@ -144,15 +125,7 @@ function App() {
 
 // 抽离错误显示组件
 const ErrorDisplay = ({ error, fileInfo }: { error: string, fileInfo: FileInfo | null }) => (
-  <div style={{ 
-    display: 'flex', 
-    justifyContent: 'center', 
-    alignItems: 'center', 
-    height: '100vh', 
-    flexDirection: 'column', 
-    color: '#ff6b6b', 
-    fontFamily: 'sans-serif' 
-  }}>
+  <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', flexDirection: 'column', color: '#ff6b6b', fontFamily: 'sans-serif' }}>
     <h2>文件加载失败</h2>
     <p>{error}</p>
     <details style={{ marginTop: '20px', maxWidth: '500px' }}>
@@ -166,13 +139,7 @@ const ErrorDisplay = ({ error, fileInfo }: { error: string, fileInfo: FileInfo |
 
 // 抽离加载界面组件
 const LoadingScreen = ({ progress, fileInfo }: { progress: number, fileInfo: FileInfo | null }) => (
-  <div style={{ 
-    display: 'flex', 
-    justifyContent: 'center', 
-    alignItems: 'center', 
-    height: '100vh', 
-    flexDirection: 'column' 
-  }}>
+  <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', flexDirection: 'column' }}>
     <div>加载 EBM 文件... {progress}%</div>
     <progress value={progress} max="100" style={{ width: '200px', marginTop: '10px' }} />
     {fileInfo && (
@@ -185,27 +152,14 @@ const LoadingScreen = ({ progress, fileInfo }: { progress: number, fileInfo: Fil
 
 // 抽离空文件显示组件
 const EmptyFileDisplay = () => (
-  <div style={{ 
-    display: 'flex', 
-    justifyContent: 'center', 
-    alignItems: 'center', 
-    height: '100vh',
-    color: '#666',
-    fontFamily: 'sans-serif'
-  }}>
+  <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', color: '#666', fontFamily: 'sans-serif' }}>
     文件数据为空
   </div>
 )
 
 // 抽离主视图组件
 const MainViewer = ({ fileData }: { fileData: ArrayBuffer }) => (
-  <div style={{ 
-    display: 'flex', 
-    justifyContent: 'center', 
-    alignItems: 'center', 
-    height: '100vh', 
-    flexDirection: 'column' 
-  }}>
+  <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', flexDirection: 'column' }}>
     <ModelViewer fileData={fileData} />
   </div>
 )

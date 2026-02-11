@@ -1,6 +1,6 @@
 // 视口控制组件
 import React from 'react';
-import { Space, Switch, Slider, Row, Col } from 'antd';
+import { Space, Switch, Slider, Row, Col, ColorPicker } from 'antd';
 import type { ViewerControls } from './ModelViewer';
 
 interface ViewportControlsProps {
@@ -15,12 +15,12 @@ export const ViewportControls: React.FC<ViewportControlsProps> = ({
   return (
     <div>
       <div style={{ marginBottom: 8, fontWeight: 500 }}>视口控制</div>
-      
+
       {/* 交互设置 */}
       <div style={{ marginBottom: 12 }}>
         <div style={{ marginBottom: 4, fontSize: '12px', color: '#666' }}>交互设置</div>
         <Row gutter={[8, 8]}>
-          <Col span={8}>
+          <Col span={6}>
             <Space orientation="vertical" size={0} style={{ width: '100%' }}>
               <span style={{ fontSize: '12px' }}>旋转</span>
               <Switch
@@ -30,7 +30,7 @@ export const ViewportControls: React.FC<ViewportControlsProps> = ({
               />
             </Space>
           </Col>
-          <Col span={8}>
+          <Col span={6}>
             <Space orientation="vertical" size={0} style={{ width: '100%' }}>
               <span style={{ fontSize: '12px' }}>缩放</span>
               <Switch
@@ -40,13 +40,23 @@ export const ViewportControls: React.FC<ViewportControlsProps> = ({
               />
             </Space>
           </Col>
-          <Col span={8}>
+          <Col span={6}>
             <Space orientation="vertical" size={0} style={{ width: '100%' }}>
               <span style={{ fontSize: '12px' }}>平移</span>
               <Switch
                 size="small"
                 checked={viewerControls.enablePan}
                 onChange={(checked) => updateControl('enablePan', checked)}
+              />
+            </Space>
+          </Col>
+          <Col span={6}>
+            <Space orientation="vertical" size={0} style={{ width: '100%' }}>
+              <span style={{ fontSize: '12px' }}>背景</span>
+              <ColorPicker
+                defaultValue={'#aaa'} // 默认背景颜色（浅灰色）
+                onChange={(color) => updateControl('backgroundColor', color.toHexString())} // 颜色变化回调，转换为十六进制字符串
+                disabledAlpha // 禁用透明度调节，只使用纯色
               />
             </Space>
           </Col>

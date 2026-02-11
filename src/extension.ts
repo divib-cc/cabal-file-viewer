@@ -68,11 +68,12 @@ class EbmEditorProvider implements vscode.CustomReadonlyEditorProvider {
 	}
 
 	private getReactHtmlWithDirectFileAccess(webview: vscode.Webview, fileUri: vscode.Uri, fileName: string): string {
+		// 获取 webview 资源的 URI
+		const reactDistPath = vscode.Uri.joinPath(this.context.extensionUri, 'out');
+		const resourceUri = webview.asWebviewUri(reactDistPath);
+
 		// 将工作区文件URI转换为Webview可访问的URI
 		const webviewFileUri = webview.asWebviewUri(fileUri);
-
-		const reactDistPath = join(this.context.extensionPath, 'out');
-		const resourceUri = webview.asWebviewUri(vscode.Uri.file(reactDistPath));
 
 		return `<!doctype html>
 <html lang="zh">
